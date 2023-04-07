@@ -8,18 +8,38 @@ let animationId
 const background = new Image()
 background.src = './images/bg.png'
 
+const fabbyImg = new Image()
+fabbyImg.src = './images/flappy.png'
 
+const fabby = {
+  x: 600,
+  y: 300,
+  width: 80,
+  height: 56,
+  speedX: 0,
+  speedY: 0,
+  gravity: 0,
+  gravitySpeed: 0,
 
+  update() {
+    ctx.drawImage(fabbyImg, this.x, this.y, this.width, this.height)
+    },
+
+  newPostion() {
+
+    }
+
+}
 
 
 function animationLoop() {
 
   ctx.clearRect(0, 0, 1200, 600)
-
   ctx.drawImage(background, 0, 0, 1200, 600)
 
-  
+  fabby.update()
 
+  
 }
 
 function startGame() {
