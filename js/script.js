@@ -12,21 +12,48 @@ const fabbyImg = new Image()
 fabbyImg.src = './images/flappy.png'
 
 const fabby = {
-  x: 600,
-  y: 300,
+  x: 400,
+  y: 200,
   width: 80,
   height: 56,
   speedX: 0,
   speedY: 0,
-  gravity: 0,
-  gravitySpeed: 0,
+  gravity: .1,
+  // gravitySpeed: 0,
 
   update() {
+    if (this.y + this.height >= canvas.height) {
+        this.y -= 20
+      }
+    if (this.y <= 0) {
+        this.y += 20
+      }
+    if (this.speedY < 8) { 
+        this.speedY += this.gravity
+      } else {
+        this.speedY = this.speedY
+      }
+    this.y += this.speedY
     ctx.drawImage(fabbyImg, this.x, this.y, this.width, this.height)
     },
 
-  newPostion() {
+  newPostion(event) {
 
+    switch (event.code) {
+      case 'ArrowLeft':
+        this.x -= 6
+
+        break;
+      case 'ArrowRight':
+        this.x += 6
+
+        break;
+      case 'Space':
+        if (this.speedY > -5){
+        this.speedY -= 1}
+        console.log("space");
+        break;
+    }
     }
 
 }
@@ -73,4 +100,12 @@ window.onload = function() {
 
     }
   };
+
+  document.addEventListener("keydown", (event) => {
+
+    fabby.newPostion(event)
+
+  });
+
+
 };
