@@ -3,13 +3,22 @@ const ctx = canvas.getContext('2d')
 
 let gameOn = false
 
+let obstacleArray = []
+
 let animationId
+let obstacleId
 
 const background = new Image()
 background.src = './images/bg.png'
 
 const fabbyImg = new Image()
 fabbyImg.src = './images/flappy.png'
+
+const obstacleTopImg = new Image()
+obstacleTopImg.src = './images/obstacle_top.png'
+
+const obstacleBottomImg = new Image()
+obstacleBottomImg.src = './images/obstacle_bottom.png'
 
 const fabby = {
   x: 400,
@@ -59,6 +68,34 @@ const fabby = {
 }
 
 
+class Obstacle {
+
+  constructor() {
+    this.x = canvas.width;
+    this.gap = 100;
+    this.y = Math.random() * (canvas.height - this.gap);
+    this.bottomY = this.y + this.gap
+
+  }
+
+  update() {
+    this.x -= 2
+  }
+
+  draw() {
+   // ctx.drawImage(obstacleTopImg, this.x, this.y, )
+    ctx.drawImage(obstacleBottomImg, this.x, this.bottomY)
+  }
+
+}
+
+function generateObstacles () {
+  console.log("generating obstacle")
+  obstacleArray.push(new Obstacle())
+  console.log("Obstacles", obstacleArray)
+}
+
+
 function animationLoop() {
 
   ctx.clearRect(0, 0, 1200, 600)
@@ -66,16 +103,25 @@ function animationLoop() {
 
   fabby.update()
 
+  obstacleArray.forEach((obstacle, i, arr) => {
+    if (obstacle.x < 0) {
+      arr.splice(i, 1)
+    }
+    obstacle.update()
+    obstacle.draw()
+  })
   
 }
+
+
 
 function startGame() {
 
   gameOn = true
 
   animationId = setInterval(animationLoop, 16)
+  obstacleId = setInterval(generateObstacles, 4000)
 
-  console.log('starting')
 }
 
 
