@@ -25,7 +25,6 @@ const fabby = {
   y: 200,
   width: 80,
   height: 56,
-  speedX: 0,
   speedY: 0,
   gravity: .1,
   // gravitySpeed: 0,
@@ -51,19 +50,17 @@ const fabby = {
     switch (event.code) {
       case 'ArrowLeft':
         this.x -= 6
-
         break;
       case 'ArrowRight':
         this.x += 6
-
         break;
       case 'Space':
         if (this.speedY > -5){
         this.speedY -= 1}
-        console.log("space");
         break;
     }
-    }
+
+  }
 
 }
 
@@ -74,7 +71,8 @@ class Obstacle {
     this.x = canvas.width;
     this.gap = 200;
     this.y = Math.random() * (canvas.height - this.gap);
-    this.bottomY = this.y + this.gap
+    this.bottomY = this.y + this.gap;
+    this.width = 138;
 
   }
 
@@ -95,6 +93,55 @@ function generateObstacles () {
   
 }
 
+function gameOver() {
+  clearInterval(animationId)
+  clearInterval(obstacleId)
+
+  obstacleArray = []
+  fabby.x = 400
+  fabby.y = 200
+  fabby.speedY = 0
+
+  gameOn = false
+
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.fillStyle = 'black'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+  console.log('game over')
+
+}
+
+
+
+function checkCollision(object) {
+
+  
+  if (fabby.x < object.x + object.width &&
+    fabby.x + fabby.width > object.x)
+    
+    {
+    if  (fabby.y <= object.y) {
+      fabby.y += 20
+    }
+    if (fabby.y + fabby.height >= object.bottomY) {
+      fabby.y -= 20
+    }
+  }
+
+  if (fabby.x < object.x + object.width &&
+    fabby.x + fabby.width > object.x && 
+    !
+    (
+      fabby.y > object.y &&
+      fabby.y + fabby.height < object.bottomY
+    )   
+    ) {
+    gameOver()
+  }
+}
+
 
 function animationLoop() {
 
@@ -104,11 +151,12 @@ function animationLoop() {
   fabby.update()
 
   obstacleArray.forEach((obstacle, i, arr) => {
+    obstacle.update()
+    obstacle.draw()
+    checkCollision(obstacle)
     if (obstacle.x + obstacle.width < 0) {
       arr.splice(i, 1)
     }
-    obstacle.update()
-    obstacle.draw()
   })
   
 }
@@ -148,7 +196,7 @@ window.onload = function() {
   };
 
   document.addEventListener("keydown", (event) => {
-
+    event.preventDefault()
     fabby.newPostion(event)
 
   });
