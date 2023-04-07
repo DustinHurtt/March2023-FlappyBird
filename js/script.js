@@ -3,6 +3,8 @@ const ctx = canvas.getContext('2d')
 
 let gameOn = false
 
+let score = 0
+
 let obstacleArray = []
 
 let animationId
@@ -96,6 +98,28 @@ function generateObstacles () {
 function gameOver() {
   clearInterval(animationId)
   clearInterval(obstacleId)
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.fillStyle = 'black'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.fillStyle = 'white'
+  ctx.font = '40px Arial'
+
+  if (score > 2) {
+    ctx.fillText('You win', 450, 250)
+    ctx.font = '32px Arial'
+    ctx.fillText(`Final Score: ${score}`, 450, 350)
+
+
+  } else {
+
+    ctx.fillText('You lose', 450, 250)
+    ctx.font = '32px Arial'
+    ctx.fillText(`Final Score: ${score}`, 450, 350)
+
+  }
+
+
+
 
   obstacleArray = []
   fabby.x = 400
@@ -104,10 +128,7 @@ function gameOver() {
 
   gameOn = false
 
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = 'black'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  score = 0
 
   console.log('game over')
 
@@ -148,16 +169,35 @@ function animationLoop() {
   ctx.clearRect(0, 0, 1200, 600)
   ctx.drawImage(background, 0, 0, 1200, 600)
 
+
+  // fabby.update()
+  
+  // obstacleArray.forEach((obstacle, i, arr) => {
+  //   obstacle.update()
+  //   obstacle.draw()
+  //   checkCollision(obstacle)
+  //   if (obstacle.x + obstacle.width < 0) {
+  //     arr.splice(i, 1)
+  //   }
+  // })
+
+  for (let i = 0; i < obstacleArray.length; i++) {
+    obstacleArray[i].update()
+    obstacleArray[i].draw()
+    checkCollision(obstacleArray[i])
+    if (obstacleArray[i].x + obstacleArray[i].width < 0) {
+      score += 1
+      obstacleArray.splice(i, 1)
+    }
+  }
+
   fabby.update()
 
-  obstacleArray.forEach((obstacle, i, arr) => {
-    obstacle.update()
-    obstacle.draw()
-    checkCollision(obstacle)
-    if (obstacle.x + obstacle.width < 0) {
-      arr.splice(i, 1)
-    }
-  })
+  ctx.fillStyle = 'black'
+  ctx.fillRect(20, 20, 100, 50)
+  ctx.fillStyle = 'white'
+  ctx.font = '15px Arial'
+  ctx.fillText(`Score: ${score}`, 30, 50)
   
 }
 
@@ -197,7 +237,9 @@ window.onload = function() {
 
   document.addEventListener("keydown", (event) => {
     event.preventDefault()
-    fabby.newPostion(event)
+    if (gameOn) {
+      fabby.newPostion(event)
+    }
 
   });
 
