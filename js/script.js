@@ -72,7 +72,7 @@ class Obstacle {
 
   constructor() {
     this.x = canvas.width;
-    this.gap = 100;
+    this.gap = 200;
     this.y = Math.random() * (canvas.height - this.gap);
     this.bottomY = this.y + this.gap
 
@@ -83,16 +83,16 @@ class Obstacle {
   }
 
   draw() {
-   // ctx.drawImage(obstacleTopImg, this.x, this.y, )
+    ctx.drawImage(obstacleTopImg, this.x, this.y - obstacleTopImg.height)
     ctx.drawImage(obstacleBottomImg, this.x, this.bottomY)
   }
 
 }
 
 function generateObstacles () {
-  console.log("generating obstacle")
+  
   obstacleArray.push(new Obstacle())
-  console.log("Obstacles", obstacleArray)
+  
 }
 
 
@@ -104,7 +104,7 @@ function animationLoop() {
   fabby.update()
 
   obstacleArray.forEach((obstacle, i, arr) => {
-    if (obstacle.x < 0) {
+    if (obstacle.x + obstacle.width < 0) {
       arr.splice(i, 1)
     }
     obstacle.update()
